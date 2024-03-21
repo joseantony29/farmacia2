@@ -1,0 +1,194 @@
+{% load static %}
+<!Doctype html>
+<html class="no-js" lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %} {% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <!-- notifier -->
+    <link rel="stylesheet" href="{% static 'css/notifier.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}
+    {% endblock extra_css %}
+    <style>
+        .content {
+            background-image: url('{% static "images/fondologin.jpg" %}');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    {% block left_panel %}
+    <!-- Left Panel -->
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
+            <div id="main-menu" class="main-menu">
+                <ul class="nav navbar-nav">
+
+                    <li class="dropdown pt-2">
+                        <a href="{% url 'vista' %}"><i class="menu-icon fa fa-home"></i>Inicio</a>
+                    </li>
+
+                    <li class="menu-item-has-children dropdown">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-envelope"></i>Mis solicitudes</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-table"></i><a href="{% url 'mis_solicitudes_medicamentos' %}">Solicitud de medicamentos</a></li>
+                            {% if request.user.perfil.rol == "JC" %}
+                                <li><i class="fa fa-table"></i><a href="#">Solicitud de jornada de medicamentos</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    
+                    {% if not request.user.perfil.rol == "PA" and not request.user.perfil.rol == "JC" and not request.user.perfil.rol == "AT" %}
+                        <li class="menu-item-has-children dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Registros</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                {% if request.user.perfil.rol == "AD" %}
+                                    <!-- <li><i class="fa fa-table"></i><a href="#">Empleados</a></li> -->
+                                    <li><i class="fa fa-table"></i><a href="{% url 'lista_perfiles' %}">Usuarios</a></li>
+                                {% endif %}
+                                <li><i class="fa fa-table"></i><a href="{% url 'listado_productos' %}">Productos</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if not request.user.perfil.rol == "PA" and not request.user.perfil.rol == "JC" %}
+                        <li class="menu-item-has-children dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Movimientos</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                {% if request.user.perfil.rol == "AD" or request.user.perfil.rol == "AL" %}
+                                    <li><i class="fa fa-table"></i><a href="{% url 'listado_ingresos' %}">Listado de ingresos</a></li>
+                                {% endif %}
+                                <li><i class="fa fa-table"></i><a href="{% url 'listado_solicitudes_medicamentos' %}">Solicitud de medicamentos</a></li>
+                                <li><i class="fa fa-table"></i><a href="#">Solicitud de jornada de medicamentos</a></li>
+                            </ul>
+                         </li>
+                    {% endif %}
+
+                        {% if request.user.perfil.rol == "AD" %}
+
+                            <li class="menu-item-has-children dropdown">
+                                <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-archive"></i>Reportes</a>
+                                <ul class="sub-menu children dropdown-menu">
+                                    {# <li><i class="fa fa-table"></i><a href="#"></a></li> #}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    <hr width="100%">
+
+                    {% if request.user.perfil.rol == "AD" %}
+
+                        <li class="menu-item-has-children dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Soporte</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <!-- <li><i class="fa fa-table"></i><a href="#">Gestión de usuarios</a></li> -->
+                                <li><i class="fa fa-table"></i><a href="{% url 'edit_landing' %}">Edicion del Landing Page</a></li>
+                                <!-- <li><i class="fa fa-table"></i><a href="#">Respaldo</a></li>
+                                <li><i class="fa fa-table"></i><a href="#">Restauración</a></li> -->
+                            </ul>
+                        </li>
+
+                    {% endif %}
+
+                    {% if not request.user.perfil.rol == "PA" and not request.user.perfil.rol == "JC" and not request.user.perfil.rol == "AT" %}
+                        <li class="menu-item-has-children dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-wrench"></i>Mantenimiento</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><i class="fa fa-table"></i><a href="{% url 'listado_lab' %}">Laboratorio</a></li>
+                                <li><i class="fa fa-table"></i><a href="{% url 'listado_insumos' %}">Tipo de Insumo</a></li>
+                                <li><i class="fa fa-table"></i><a href="{% url 'listado_tipo_movi' %}">Tipo de Movimientos</a></li>
+                                <li><i class="fa fa-table"></i><a href="{% url 'listado_almacen' %}">Ubicación</a></li>
+                                <li><i class="fa fa-table"></i><a href="{% url 'lista_zonas' %}">Zona</a></li>
+                            </ul>
+                        </li>
+                        
+                    {% endif %}
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+    </aside>
+    <!-- /#left-panel --> 
+    {% endblock left_panel %}
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+        <!-- Header-->
+        <header id="header" class="header">
+            <div class="top-left">
+                <div class="navbar-header">
+                    {% block a %}
+                    <a id="menuToggle" class="menutoggle col"><i class="fa fa-bars"></i></a>
+                    <a class="navbar-brand col" href="#"><img src="{% static 'images/logo.jpg' %}"></a>
+                    {% endblock a %}
+                </div>
+            </div>
+            
+            
+            <div class="top-right">
+                <div class="header-menu d-flex align-items-center justify-content-center">
+                    <div class="navbar-brand">
+                        <div>SU ROL ES: {{ user.perfil.get_rol_display|upper }}</div>
+                    </div>
+                    <div class="navbar-brand ml-auto"><div id="reloj"></div></div>
+                    {% block right_panel %}
+                    <div class="user-area dropdown float-right">
+                        <a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user"></i>
+                            <!-- <img class="user-avatar rounded-circle" src= "{% get_media_prefix %}{{ request.user.imagen }}" onerror="this.src='{% static 'images/admin.png' %}';"> -->
+                        </a>
+                        <div class="user-menu dropdown-menu">
+                            <!-- <a class="nav-link" href="#"><i class="fa fa-user"></i>Cambiar Perfil</a> -->
+                            <a class="nav-link" href="#" rel="cambiar_clave"><i class="fa fa-lock"></i>Cambiar Contraseña</a>
+                            <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-power-off"></i>Cerrar sesion</a>
+                        </div>
+                    </div>
+                    {% endblock right_panel %}
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            {% block body %}
+            {% endblock %}
+        </div>
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        <footer class="site-footer">
+        </footer>
+        <!-- /.site-footer -->
+        <input type="hidden" name="user_rol" id="user_rol" value="{{ request.user.perfil.rol }}">
+    </div>
+    <!-- /#right-panel -->
+
+    <!-- modales -->
+    {% include 'acceso/cambiar_clave.html' %}
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- notifier -->
+    <script src="{% static 'js/plugins/notifier.js' %}"></script>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/funciones.js' %}"></script>
+
+    {% block extrajs %}
+    {% endblock extrajs %}
+</body>
+</html>

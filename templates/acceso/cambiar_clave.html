@@ -1,0 +1,43 @@
+<div class="modal fade" id="id_modal_password" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <form action="" method="post" id="form_cambiar_clave">{% csrf_token %}
+            <input type="hidden" name="action_password" value="" id="action_password">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">Actualizar contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="row g-2 mb-3">
+                            <div class="col">
+                                <label for="id_username">Usuario</label>
+                                <input type="text" name="username" id="id_username" class="form-control" value="{{request.user.username}}" required readonly>
+                            </div>
+                            <div class="col">
+                                <label for="id_password_actual">Contraseña actual</label>
+                                <input type="password"  onkeypress="return Texto_Numeros(event)" name="password_actual" id="id_password_actual" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col">
+                                <label for="id_new_password">Contraseña nueva</label>
+                                <input type="password"  onkeypress="return Texto_Numeros(event)" minlength="6" name="new_password" id="id_new_password" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label for="id_new_password2">Confirme contraseña</label>
+                                <input type="password"  onkeypress="return Texto_Numeros(event)" minlength="6" name="new_password2" id="id_new_password2" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

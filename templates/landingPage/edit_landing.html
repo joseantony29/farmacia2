@@ -1,0 +1,77 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} Editar landing {% endblock title %}
+
+{% block body %}
+<form action="#" method="post" id="form_landing" enctype="multipart/form-data">{% csrf_token %}
+    <div class="card">
+        <input type="hidden" name="action" id="action" value="edit_landing">
+        <div class="card-header">
+            <strong>Actualizar información de la pagina principal</strong> 
+        </div>
+        <div class="card-body card-block">
+            {% if messages %}
+                    {% for message in messages %}
+                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                            <span class="badge badge-pill badge-success">Exito!</span>
+                            {{ message }}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+            <p>Se recomienda que las imagenes tengan una resolucion de 1200x420 pixeles</p>    
+            
+            <div class="row g-2 mb-3 mt-5">
+                <div class="col">
+                    <label for="">Imagen 1</label>
+                    {{form.imagen1|add_class:'form-control'}}
+                </div>
+                <div class="col">
+                    <label for="">Imagen 2</label>
+                    {{form.imagen2|add_class:'form-control'}}
+                </div>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col">
+                    <label for="">Imagen 3</label>
+                    {{form.imagen3|add_class:'form-control'}}
+                </div>
+                <div class="col">
+                    <label for="">Imagen 4</label>
+                    {{form.imagen4|add_class:'form-control'}}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="">Imagen 5</label>
+                    {{form.imagen5|add_class:'form-control'}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="">Texto descriptivo</label>
+                    {{form.texto1|add_class:'form-control'|attr:'style:resize:none'}}
+                </div>
+            </div>
+            
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fa fa-dot-circle-o"></i> Guardar
+            </button>
+            <button type="button" class="btn btn-danger btn-sm">
+                <i class="fa fa-ban"></i> Cancelar
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock body %}
+
+{% block extrajs %}
+
+{% endblock extrajs %}

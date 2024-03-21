@@ -1,0 +1,243 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Listado de Usuarios
+{% endblock title %}
+
+{% block extra_css %}
+    	<!--Data table-->
+	<link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+{% endblock extra_css %}
+    
+
+{% block body %}
+<div class="row">
+    <!-- Zero config table start -->
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 id="page_title">{{ sub_title }}</h5>
+                <div class="cart-tools">
+                    <!-- <a href="#" id="btn_filter" class="btn btn-icon btn-light-dark ml-10" rel="btn_open_modal_report" data-bs-toggle="tooltip" data-bs-placement="top" title="Reportes">
+                        <i class="fas fa-file-pdf"></i>
+                    </a> -->
+                    <div class="input-group">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-btn mr-3">
+                                    <div class="btn-group">
+                                        <select name="select_filter" id="id_select_filter" class="form-control">
+                                            <option value="AD">Administrador</option>
+                                            <option value="AL">Almacen</option>
+                                            <option value="AT">Atención al cliente</option>
+                                            <option value="JC">Jefe de comunidad</option>
+                                            <option value="PA" selected>Paciente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary mb-1" id="btn_nuevo_usuario">
+                                    <i class="fa fa-plus text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="listado_usuarios" class="table table-striped table-hover table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th>C.I</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Genero</th>
+                                <th>Telefono</th>
+                                <th>Zona</th>
+                                <th>Opciones</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>C.I</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Genero</th>
+                                <th>Telefono</th>
+                                <th>Zona</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Zero config table end -->
+</div>
+
+<!-- modales -->
+<div class="modal fade" id="smallmodal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form method="post" id="form_user">{% csrf_token %}
+            <input type="hidden" name="action" id="action" value="nuevo_usuario">
+            <input type="hidden" name="id" id="" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">Agregar Usuarios</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="col">
+                                    <label for="">Cedula de indentidad</label>
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <div class="btn-group">
+                                                {{form.nacionalidad|add_class:'form-control'|attr:'required'}}
+                                            </div>
+                                        </div>
+                                        {{form.cedula|add_class:'form-control'|attr:'required'|attr:'onkeypress:return Solo_Numero_ci(event)'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="col-6 p-0">
+                                    <label for="" class="form-control-label">Nombres</label>
+                                    {{form.nombres|add_class:'form-control'|attr:'required'|attr:'onkeypress:return Solo_Texto(event)'}}
+                                </div>
+                                <div class="col-6 p-0">
+                                    <label for="">Apellidos</label>
+                                    {{form.apellidos|add_class:'form-control'|attr:'required'|attr:'onkeypress:return Solo_Texto(event)'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="col-5 p-1">
+                                    <label for="">F. de nacimiento</label>
+                                    {{form.f_nacimiento|add_class:'form-control'|attr:'required'|attr:'type:date'}}
+                                </div>
+                                <div class="col-7 p-1">
+                                    <label for="">Teléfono</label>
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <div class="btn-group">
+                                                {{form.codigo_tlf|add_class:'form-control'|attr:'required'}}
+                                            </div>
+                                        </div>
+                                        {{form.telefono|add_class:'form-control'|attr:'required'|attr:'onkeypress:return Solo_Numero(event)'|attr:'maxlength:7'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="col-6">
+                                    <label for="">Genero</label>
+                                    {{form.genero|add_class:'form-control'|attr:'required'}}
+                                </div>
+                                <div class="col-6">
+                                    <label for="">¿Está embarazada?</label> <br>
+                                    <div class="form-check-inline form-check">
+                                        <label for="inline-radio1" class="form-check-label mr-3">
+                                            <input type="radio" id="inline-radio1" required name="embarazada" value="True" class="form-check-input deshabilitar">Sí
+                                        </label>
+                                        <label for="inline-radio2" class="form-check-label ">
+                                            <input type="radio" id="inline-radio2" required name="embarazada" value="False" class="form-check-input deshabilitar">No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col g-2">
+                            <div class="input-group">
+                                <div class="col-4">
+                                    <label for="">Correo</label>
+                                    {{form.email|add_class:'form-control'|attr:'required'}}
+                                </div>
+                                <div class="col-4">
+                                    <label for="">Zona</label>
+                                    {{form.zona|add_class:'form-control'|attr:'required'}}
+                                </div>
+                                <div class="col-4">
+                                    <label for="">Constancia de residencia</label>
+                                    {{form.c_residencia|add_class:'form-control'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Ubicación</label>
+                            {{form.direccion|add_class:'form-control'|attr:'style:resize:none'|attr:'rows:3'|attr:'required'|attr:'onkeypress:return Texto_Numeros(event)'}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            <div class="col">
+                                <label for="">Rol en el sistema</label>
+                                {{form.rol|add_class:'form-control'|attr:'required'}}
+                            </div>
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="col-6 p-1">
+                                        <label for="">Definir contraseña</label>
+                                        {{form.password1|add_class:'form-control'|attr:'required'|attr:'onkeypress:return Texto_Numeros(event)'|attr:'minlength:6'}}
+                                    </div>
+                                    <div class="col-6 p-1">
+                                        <label for="">Confirmar contraseña</label>
+                                        {{form.password2|add_class:'form-control'|attr:'required'|attr:'onkeypress:return Texto_Numeros(event)'|attr:'minlength:6'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check-inline form-check">
+                        <label for="inline-checkbox1" class="form-check-label ">
+                            <input type="checkbox" id="inline-checkbox1" name="is_active" value="True" checked class="form-check-input">Activar usuario
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% include 'pages/entidades/modal_reset_pass.html' %}
+
+{% endblock body %}
+
+
+{% block extrajs %}
+    <!--Data table-->
+    <script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>
+
+    <script src="{% static 'js/pages/entidades/usuarios.js' %}"></script>
+{% endblock extrajs %}
+    

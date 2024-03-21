@@ -1,0 +1,39 @@
+<!-- modales -->
+<div class="modal fade" id="modal_reset_password" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <form action="" method="post" id="form_reset_password">{% csrf_token %}
+            <input type="hidden" name="action_reset" value="" id="id_action_reset">
+            <input type="hidden" name="id_reset" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">Recuperar contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <label for="id_username_reset">Usuario</label>
+                            <input type="text" name="username_reset" id="id_username_reset" class="form-control" required readonly>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col">
+                                <label for="">Contraseña</label>
+                                <input type="password" onkeypress="return Texto_Numeros(event)" minlength="6" name="password1_reset" id="id_password1_reset" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label for="">Confirme contraseña</label>
+                                <input type="password" onkeypress="return Texto_Numeros(event)" minlength="6" name="password2_reset" id="id_password2_reset" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

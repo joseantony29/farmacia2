@@ -1,0 +1,281 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Registro de mi Solicitud
+{% endblock title %}
+
+
+{% block extra_css %}    	
+    <!--Data table-->
+    <link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+    <!-- select2 -->
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+    <!-- notifier -->
+    <link rel="stylesheet" href="{% static 'css/notifier.css' %}">
+{% endblock extra_css %}
+    
+
+{% block body %}
+    <form action="" method="post" enctype="multipart/form-data" id="form_register">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-4">
+                <!-- Basic Inputs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Datos generales</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label" for="id_descripcion">Descripcion</label>
+                            {{ form.descripcion|add_class:'form-control form-control-sm'|attr:'rows:3'|attr:'style:resize:none'|attr:'onkeypress:return Texto_Numeros(event)' }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="id_recipe">Recipe</label>
+                            {{ form.recipe|add_class:'form-control form-control-sm' }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="id_recipe">Beneficiado</label>
+                            <div class="input-group">
+                                {{ form.beneficiado|add_class:'form-control form-control-sm beneficiado' }}
+                                <a class="btn btn-sm btn-dark" href="#" rel="open_modal_beneficiado">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>	
+                        </div>
+                        <button type="submit" class="btn btn-info me-2" id="btn_submit">Registrar</button>
+                        <button type="button" onclick="PagePrevious()" class="btn btn-dark">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <!-- Basic Inputs -->
+                <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5>Detalles de la Solicitud</h5>
+                        <div class="card-tools">
+                            <a href="#" id="btn_delete" rel="btn_delete" class="btn btn-danger ml-10">
+                                Borrar todos los detalles
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="id_provider" class="form-label">Buscar Producto</label>
+                            <div class="input-group">
+                                <select name="search" class="form-control form-control-sm" id=""></select>
+                                <a class="btn btn-sm btn-dark" href="#" rel="open_modal_product">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                            </div>					
+                        </div>
+                        <hr>
+                        <div class="dt-responsive table-responsive">
+                            <table id="detalle" class="table table-striped table-hover table-bordered nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Modal productos -->
+    <div class="modal fade" id="modal_search_product" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="modal-title" id="mediumModalLabel">Listado de productos</h5>
+                        <div class="cart-tools">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="id_datatable_productos" class="table table-striped table-hover table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Seleccionar</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_beneficiados" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form action="" method="post" id="form_beneficiado">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="modal-title" id="mediumModalLabel">Registrar Beneficiado</h5>
+                            <div class="cart-tools">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col col-md-2">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_cedula">Nacionalidad</label>
+                                    {{ form_b.nacionalidad|add_class:'form-control'|attr:'placeholder:Introduzca la Nacionalidad' }}
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_cedula">Cedula</label>
+                                    {{ form_b.cedula|add_class:'form-control cedula'|attr:'placeholder:Introduzca la cedula'|attr:'onkeypress:return Solo_Numero(event)' }}
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_nombres">Nombres</label>
+                                    {{ form_b.nombres|add_class:'form-control nombre'|attr:'placeholder:Introduzca el nombre'|attr:'onkeypress:return Solo_Texto(event)' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_apellidos">Apellidos</label>
+                                    {{ form_b.apellidos|add_class:'form-control'|attr:'placeholder:Introduzca el apellido'|attr:'onkeypress:return Solo_Texto(event)' }}
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <label for="">Teléfono</label>
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <div class="btn-group">
+                                            <select name="codigo_tlf" id="" class="form-control" required>
+                                                <option value="">----</option>
+                                                <option value="0412">0412</option>
+                                                <option value="0416">0416</option>
+                                                <option value="0426">0426</option>
+                                                <option value="0414">0414</option>
+                                                <option value="0424">0424</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {{ form_b.telefono|add_class:'form-control'|attr:'placeholder:Introduzca el telefono'|attr:'maxlength:7'|attr:'minlength:7'|attr:'onkeypress:return Solo_Numero(event)' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_genero">Genero</label>
+                                    {{ form_b.genero|add_class:'form-control'|attr:'placeholder:Introduzca el genero' }}
+                                </div>
+                            </div>
+                            <div class="col col">
+                                <label for="">¿Está embarazada?</label> <br>
+                                <div class="form-check-inline form-check">
+                                    <label for="inline-radio1" class="form-check-label mr-3">
+                                        <input type="radio" id="inline-radio1" name="embarazada" value="True" class="form-check-input deshabilitar">Sí
+                                    </label>
+                                    <label for="inline-radio2" class="form-check-label ">
+                                        <input type="radio" id="inline-radio2" name="embarazada" value="False" class="form-check-input deshabilitar">No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_telefono">F.Nacimiento</label>
+                                    {{ form_b.f_nacimiento|add_class:'form-control'|attr:'placeholder:Introduzca la fecha de nacimiento'|attr:'type:date' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_zona">Zona</label>
+                                    {{ form_b.zona|add_class:'form-control'|attr:'placeholder:Introduzca la zona' }}
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="id_direccion">Direccion</label>
+                                    {{ form_b.direccion|add_class:'form-control'|attr:'placeholder:Introduzca la direccion'|attr:'rows:3'|attr:'onkeypress:return Texto_Numeros(event)' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info me-2" id="btn_submit_b">Registrar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+    
+
+{% block extrajs %}
+	<!--Data table-->
+	<script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>
+    <!-- select2 -->
+    <script src="{% static 'js/plugins/i18n/es.js' %}"></script>
+    <script src="{% static 'js/plugins/select2.min.js' %}"></script>
+    <!-- notifier -->
+    <script src="{% static 'js/plugins/notifier.js' %}"></script>
+
+    <script src="{% static 'js/pages/registrar_mi_solicitud.js' %}"></script>    
+    
+    <script>
+        $(document).ready(function () {
+            $('#id_genero').change(function () {
+                if ($(this).val() == "MA") {
+                    // Deshabilitar checkboxes
+                    $('.deshabilitar').prop('disabled', true);
+                    $('#inline-radio2').prop('checked', true)
+                } else {
+                    // Habilitar checkboxes
+                    $('.deshabilitar').prop('disabled', false);
+                }
+            }).trigger('change'); // Trigger para establecer el estado inicial
+        });
+    </script>
+{% endblock extrajs %}

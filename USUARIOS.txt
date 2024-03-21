@@ -1,0 +1,19 @@
+ADMINISTRADOR: Harvey Specter
+usuario: V-20000000
+pass: Harvey123
+
+ALMACENISTA: Donna Paulsen
+usuario: V-21000000
+pass: Donna123
+
+ATENCION AL CLIENTE: Rachel Zane
+usuario: V-22000000
+pass: Rachel123
+
+JEFE DE COMUNIDAD: Louis Litt
+usuario: V-23000000
+pass: Louis123
+
+PACIENTE: Jessica Pearson
+usuario: V-24000000
+pass: Jessica123

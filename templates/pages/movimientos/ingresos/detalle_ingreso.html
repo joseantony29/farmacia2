@@ -1,0 +1,93 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+    Detalle de ingreso
+{% endblock title %}
+
+{% block extra_css %}    	
+    <!--Data table-->
+    <link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+{% endblock extra_css %}
+
+{% block body %}
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">{{sub_title}}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">ID</h4>
+                            <p class="card-text">{{ ingreso.pk }}.</p>
+        
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Fecha</h4>
+                            <p class="card-text">{{ingreso.fecha|date:'d/m/Y'}}.</p>
+        
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Tipo de ingreso</h4>
+                            <p class="card-text">{{ingreso.tipo_ingreso}}.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col col-md-12">
+                            <h4 class="card-title">Descripcion</h4>
+                            <p class="card-text">{{ingreso.descripcion}}.</p>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Detalle de ingreso</strong>
+                </div>
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="listado" class="table table-striped table-hover table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Lote</th>
+                                    <th>Cantidad</th>
+                                    <th>Fecha de vencimiento</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for det in ingreso.detalle.all %}
+                                    <tr>
+                                        <td>{{ det.inventario.producto }}</td>
+                                        <td>{{ det.lote }}</td>
+                                        <td>{{ det.cantidad }}</td>
+                                        <td>{{ det.f_vencimiento|date:'d/m/Y' }}</td>
+                                    </tr>
+                                {% endfor %}
+                                    
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block extrajs %}
+	<!--Data table-->
+	<script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>     
+{% endblock extrajs %}

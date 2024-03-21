@@ -1,0 +1,197 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+    Detalle del producto
+{% endblock title %}
+
+{% block extra_css %}    	
+    <!--Data table-->
+    <link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+{% endblock extra_css %}
+
+{% block body %}
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">{{sub_title}}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <h4 class="card-title">ID</h4>
+                            <p class="card-text">{{ producto.pk }}.</p>
+        
+                        </div>
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Nombre</h4>
+                            <p class="card-text">{{producto.nombre}}.</p>
+        
+                        </div>
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Almacen</h4>
+                            <p class="card-text">{{ producto.almacen }}.</p>
+                        </div>
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Laboratorio</h4>
+                            <p class="card-text">{{ producto.laboratorio }}.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Tipo de insumo</h4>
+                            <p class="card-text">{{ producto.tipo_insumo }}.</p>
+                        </div>
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Caduca?</h4>
+                            <p class="card-text">{{ producto.if_expire_date|yesno:'Si,No' }}.</p>
+                        </div>
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Stock minimo</h4>
+                            <p class="card-text">{{ producto.stock_minimo }}.</p>
+                        </div>
+                        <div class="col col-md-3">
+                            <h4 class="card-title">Stock Total </h4>
+                            <p class="card-text">{{ producto.total_stock }}.</p>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Inventario</strong>
+                </div>
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="listado" class="table table-striped table-hover table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Lote</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Stock</th>
+                                  </tr>
+                            </thead>
+                            <tbody>         
+                                    {% for i in inventario %}
+                                        <tr>
+                                            <td>{{ i.pk }}</td>
+                                            <td>{{ i.lote }}</td>
+                                            <td>{{ i.f_vencimiento|date:'d/m/Y' }}</td>
+                                            <td>{{ i.stock }}</td>
+                                        </tr>
+                                    {% endfor %}                                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Historial de movimientos</strong>
+                </div>
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="listado2" class="table table-striped table-hover table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo de movimiento</th>
+                                    <th>Fecha</th>
+                                    <th>Empleado</th>
+                                    <th>Producto-Lote</th>
+                                    <th>Cantidad</th>
+                                  </tr>
+                            </thead>
+                            <tbody>         
+                                    {% for h in historial %}
+                                        <tr>
+                                            <td>{{ h.pk }}</td>
+                                            <td>{{ h.tipo_mov }}</td>
+                                            <td>{{ h.fecha_mov|date:'d/m/Y' }}</td>
+                                            <td>{{ h.empleado.nombres }} {{ h.empleado.apellidos }}</td>
+                                            <td>{{ h.producto.producto }} - {{ h.producto.lote }}</td>
+                                            
+                                            {% if h.tipo_mov.operacion == '+' %}
+                                                <td><span class="badge badge-success">+{{ h.cantidad }}</span></td>
+                                            {% else %}
+                                                <td><span class="badge badge-danger">-{{ h.cantidad }}</span></td>
+                                            {% endif %}
+                                                
+                                        </tr>
+                                    {% endfor %}                                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+{% block extrajs %}
+	<!--Data table-->
+	<script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>     
+
+    <script>
+        /** OPEN MODAL PRODUCT **/
+        $('a[rel="ver_recipe"]').on('click', function () {
+            $('#modal_recipe').modal('show');
+        });
+
+        $('#listado2').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ordering: false,
+            searching: true,
+            paging: true,
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrand del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "<span class='fa fa-angle-double-left'></span>",
+                    "sLast": "<span class='fa fa-angle-double-right'></span>",
+                    "sNext": "<span class='fa fa-angle-right'></span>",
+                    "sPrevious": "<span class='fa fa-angle-left'></span>"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+            initComplete: function(settings, json) {
+        
+            }
+	    });
+    </script>
+
+{% endblock extrajs %}

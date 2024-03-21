@@ -1,0 +1,150 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+    Mi solicitud de medicamento
+{% endblock title %}
+
+{% block extra_css %}    	
+    <!--Data table-->
+    <link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+{% endblock extra_css %}
+
+{% block body %}
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">{{sub_title}}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">ID</h4>
+                            <p class="card-text">{{ solicitud.pk }}.</p>
+        
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Fecha</h4>
+                            <p class="card-text">{{solicitud.fecha_soli|date:'d/m/Y'}}.</p>
+        
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Proceso Actual</h4>
+                            <p class="card-text">{{solicitud.get_proceso_actual_display}}.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Estado</h4>
+                            <p class="card-text">{{solicitud.get_estado_display}}.</p>
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Descripcion</h4>
+                            <p class="card-text">{{solicitud.descripcion}}.</p>
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Titular</h4>
+                            <p class="card-text">{{solicitud.perfil}}.</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Beneficiado</h4>
+                            <p class="card-text">{{solicitud.beneficiado}}.</p>
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Recipe</h4>
+                            <a href="#" rel="ver_recipe" class="btn btn-info">Ver Recipe</a>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Medicamentos solcitados</strong>
+                </div>
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="listado" class="table table-striped table-hover table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad solcitada</th>
+                                    <th>Cantidad entregada</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for det in solicitud.detalle.all %}
+                                    <tr>
+                                        <td>{{ det.producto.nombre }}</td>
+                                        <td>{{ det.cant_solicitada }}</td>
+                                        {% if det.cant_entregada > 0 %}
+                                            <td>{{ det.cant_entregada }}</td>
+                                        {% else %}
+                                        <td>En espera</td>
+
+                                        {% endif %}
+                                            
+                                    </tr>
+                                {% endfor %}
+                                    
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modal_recipe" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="modal-title" id="mediumModalLabel">Ver recipe</h5>
+                        <div class="cart-tools">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="dt-responsive table-responsive">
+                        <img class="card-img-top" src="{{solicitud.recipe.url}}" alt="Recipe">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block extrajs %}
+	<!--Data table-->
+	<script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>     
+
+    <script>
+        /** OPEN MODAL PRODUCT **/
+        $('a[rel="ver_recipe"]').on('click', function () {
+            $('#modal_recipe').modal('show');
+        });
+    </script>
+
+{% endblock extrajs %}

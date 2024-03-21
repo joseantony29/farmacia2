@@ -1,0 +1,145 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+    Detalle de Usuario
+{% endblock title %}
+
+{% block extra_css %}    	
+    <!--Data table-->
+    <link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+{% endblock extra_css %}
+
+{% block body %}
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Datos personales</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">ID</h4>
+                            <p class="card-text">{{ perfil.pk }}.</p>
+        
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Cedula</h4>
+                            <p class="card-text">{{perfil.nacionalidad}}{{perfil.cedula}}</p>
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Nombres y Apellidos</h4>
+                            <p class="card-text">{{perfil.nombres}} {{perfil.apellidos}}.</p>
+                        </div>
+                        
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Telefono</h4>
+                            <p class="card-text">{{perfil.telefono}}.</p>
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Genero</h4>
+                            <p class="card-text">{{perfil.get_genero_display}}.</p>
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">F. nacimiento</h4>
+                            <p class="card-text">{{perfil.f_nacimiento|date:'d/m/Y'}}.</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Embarazada?</h4>
+                            {% if perfil.genero == 'MA' %}
+                                <p class="card-text">No aplica.</p>
+                            {% else %}
+                            <p class="card-text">{{perfil.embarazada|yesno:'Si,No'}}.</p>
+                            {% endif %}
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Constancia de R.</h4>
+                            {% if perfil.c_residencia %}
+                                <a href="{{perfil.c_residencia.url}}" target="_blank">Ver constancia</a>
+                            {% else %}
+                                <p class="card-text">NO ASIGNADO.</p>
+                            {% endif %}
+                        </div>
+                        <div class="col col-md-4">
+                            <h4 class="card-title">Zona</h4>
+                            <p class="card-text">{{perfil.zona}}.</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <h4 class="card-title">Direccion.</h4>
+                            <p class="card-text">{{perfil.direccion}}.</p>
+                        </div>
+                        <div class="col">
+                            <h4 class="card-title">Rol en el Sistema.</h4>
+                            <p class="card-text">{{perfil.get_rol_display}}.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Beneficiados del Perfil</strong>
+                </div>
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="listado" class="table table-striped table-hover table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cedula</th>
+                                    <th>Nombres</th>
+                                    <th>Genero</th>
+                                    <th>F. Nac.</th>
+                                    <th>Embarazo</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for x in beneficiado %}
+                                    <tr>
+                                        <td>{{ x.id }}</td>
+                                        <td>{{ x.nacionalidad }}{{x.cedula}}</td>
+                                        <td>{{ x.nombres}} {{x.apellidos}}</td>
+                                        <td>{{ x.get_genero_display }}</td>
+                                        <td>{{ x.f_nacimiento|date:'d/m/Y' }}</td>
+                                        {% if x.genero == 'MA' %}
+                                            <td>NO APLICA</td>
+                                        {% else %}
+                                            <td>{{ x.embarazada|yesno:'Si,No' }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                    
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+{% block extrajs %}
+	<!--Data table-->
+	<script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+	<script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>     
+
+{% endblock extrajs %}

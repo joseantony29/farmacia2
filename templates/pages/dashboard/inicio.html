@@ -1,0 +1,187 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+{% block title %}
+Bienvenido a tu Farmacia Comunitaria
+{% endblock title %}
+    
+
+{% block body %}
+    <div class="col-md-12">
+        <div class="card bg-primary">
+            <div class="card-body">
+                <blockquote class="blockquote mb-0 text-light text-center">
+                    <h1 class="text-light"><strong>{{ request.user.perfil.nombres }}, BIENVENIDO A LA FARMACIA COMUNITARIA</strong></h1>
+                    {% if request.user.is_staff %}
+                        <h3 class="text-light"></h3>
+                    {% endif %}
+                    {# <footer class="blockquote-footer text-light"></footer> #}
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                <span class="badge badge-pill badge-danger">Permiso Denegado!</span>
+                {{ message }}.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if request.user.perfil.rol == 'AD' or request.user.perfil.rol == 'AL' %}
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="stat-widget-five">
+                            <div class="stat-text"><span class="count">{{ cantidad_solicitudes }}</span></div>
+                            <div class="stat-heading">Solicitudes de medicamentos (Registradas)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="stat-widget-five">
+                            <div class="stat-text"><span class="count">{{ cantidad_jornadas }}</span></div>
+                            <div class="stat-heading">Solicitudes de Jornada de medicamentos (Regitradas)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="stat-widget-five">
+                            <div class="stat-text"><span class="count">{{ cantidad_productos }}</span></div>
+                            <div class="stat-heading">Produtos (Registrados)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="stat-widget-five">
+                            <div class="stat-text"><span class="count">{{cantidad_usuarios}}</span></div>
+                            <div class="stat-heading">Usuarios (Registrados)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+        
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 id="page_title">Mis solicitutes de medicamentos</h5>
+            <!-- <div class="cart-tools">
+                <a href="{% url 'registrar_solicitud_presencial' %}" class="btn btn-icon btn-info" data-bs-toggle="tooltip" title="Registrar Solicitud">
+                    <i class="fa fa-plus text-white"></i>
+                </a>
+            </div> -->
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Proceso Actual</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Tipo de Solicitud</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for solicitud in mis_solicitudes_de_medicamentos %}
+                        <tr>
+                            <th scope="row">{{ solicitud.fecha_soli|date:'d/m/Y' }}</th>
+                            <td>{{ solicitud.get_proceso_actual_display }}</td>
+                            <td>{{ solicitud.get_estado_display }}</td>
+                            <td>{{ solicitud.get_tipo_solicitud_display }}</td>
+                        </tr>
+                    {% empty %}
+                        <p>Sin datos</p>
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 id="page_title">Mis solicitudes de jornada de medicamentos</h5>
+            <!-- <div class="cart-tools">
+                <a href="{% url 'registrar_solicitud_presencial' %}" class="btn btn-icon btn-info" data-bs-toggle="tooltip" title="Registrar Solicitud">
+                    <i class="fa fa-plus text-white"></i>
+                </a>
+            </div> -->
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Proceso Actual</th>
+                        <th scope="col">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for solicitud in mis_solicitudes_de_jornadas_de_medicamentos %}
+                        <tr>
+                            <th scope="row">{{ solicitud.fecha|date:'d/m/Y' }}</th>
+                            <td>{{ solicitud.get_proceso_actual_display }}</td>
+                            <td>{{ solicitud.get_estado_display }}</td>
+                        </tr>
+                    {% empty %}
+                        <p>Sin datos</p>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock body %}
+
+
+{% block extrajs %}
+    <script>
+        function actualizarReloj() {
+            var hoy = new Date();
+            var dia = hoy.getDate();
+            var mes = hoy.getMonth() + 1; // Se suma 1 ya que los meses empiezan en 0
+            var anio = hoy.getFullYear(); 
+            var hora = hoy.getHours();
+            var minutos = hoy.getMinutes();
+            var segundos = hoy.getSeconds();
+            var ampm = hora >= 12 ? 'PM' : 'AM';  // Determina si es AM o PM
+
+            // Convertir de formato de 24 horas a 12 horas
+            hora = hora % 12;
+            hora = hora ? hora : 12;  // Si es 0, se muestra como 12 en formato 12 horas
+            minutos = agregarCeros(minutos);
+            segundos = agregarCeros(segundos);
+
+            // Mostrar la hora en el elemento <div> con el id "reloj"
+            document.getElementById("reloj").innerHTML = dia + "/" + mes + "/" + anio + " " + hora + ":" + minutos + ":" + segundos + " " + ampm;
+        }
+
+        function agregarCeros(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
+
+        setInterval(actualizarReloj, 1000);
+    </script>
+{% endblock extrajs %}
+    
+

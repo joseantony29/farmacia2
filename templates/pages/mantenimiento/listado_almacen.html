@@ -1,0 +1,115 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+    Listado de almacenes
+{% endblock title %}
+
+{% block extra_css %}
+    	<!--Data table-->
+	<link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/responsive.bootstrap5.min.css' %}">
+{% endblock extra_css %}
+    
+
+{% block body %}
+<div class="row">
+    <!-- Zero config table start -->
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 id="page_title">{{ sub_title }}</h5>
+                <div class="cart-tools">
+                    <!-- <a href="#" id="btn_filter" class="btn btn-icon btn-light-dark ml-10" rel="btn_open_modal_report" data-bs-toggle="tooltip" data-bs-placement="top" title="Reportes">
+                        <i class="fas fa-file-pdf"></i>
+                    </a> -->
+                    <!-- <a href="#" class="btn btn-icon btn-info" data-bs-toggle="tooltip" title="Registrar laboratorio">
+                        <i class="fa fa-plus text-white"></i>
+                    </a> -->
+                    <button type="button" class="btn btn-primary mb-1" id="btn_nuevo_almacen">
+                        <i class="fa fa-plus text-white"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                            <span class="badge badge-pill badge-success">Exito!</span>
+                            {{ message }}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="dt-responsive table-responsive">
+                    <table id="listado_almacen" class="table table-striped table-hover table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">ID</th>
+                                <th>Nombre</th>
+                                <th style="width: 20%;">Opciones</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Zero config table end -->
+</div>
+
+<!-- modales -->
+<div class="modal fade" id="smallmodal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <form action="" method="post" id="form_almacen">{% csrf_token %}
+            <input type="hidden" name="action" value="" id="action">
+            <input type="hidden" name="id" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">Agregar almacenes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="row">
+                            <label for="id_nombre_almacen">Nombre del Almacen</label>
+                            <input type="text" onkeypress="return Texto_Numeros(event)" name="nombre" id="id_nombre_almacen" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock body %}
+
+
+{% block extrajs %}
+    <!--Data table-->
+    <script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/plugins/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'js/plugins/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'js/plugins/responsive.bootstrap5.min.js' %}"></script>
+    
+    <script src="{% static 'js/pages/mantenimiento/almacenes.js' %}"></script>
+{% endblock extrajs %}
+    
